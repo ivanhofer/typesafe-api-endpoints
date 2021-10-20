@@ -29,10 +29,11 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "build:types": "tsc -p tsconfig.types.json",
     "publish": "npm run build && npm publish",
-    "clear": "rm -rf ./cjs ./esm ./types"
+    "clear": "rimraf ./cjs ./esm ./types"
   },
   "devDependencies": {
     "concurrently": "^6.3.0",
+    "rimraf": "^3.0.2",
     "typescript": "^4.4.4"
   }
 }
