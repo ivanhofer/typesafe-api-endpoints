@@ -1,6 +1,6 @@
 {
   "name": "typesafe-api-endpoints",
-  "version": "1.1.0",
+  "version": "1.4.0",
   "homepage": "https://github.com/ivanhofer/typesafe-api-endpoints",
   "repository": {
     "type": "git",
@@ -13,10 +13,6 @@
   "main": "cjs/index.js",
   "types": "types/index.d.ts",
   "exports": {
-    "./*": {
-      "import": "./esm/*.js",
-      "require": "./cjs/*.js"
-    },
     ".": {
       "import": "./esm/index.js",
       "require": "./cjs/index.js"
@@ -31,7 +27,8 @@
     "build": "concurrently -n w: npm:build:*",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "build:types": "tsc -p tsconfig.types.json"
+    "build:types": "tsc -p tsconfig.types.json",
+    "publish": "npm run build && npm publish"
   },
   "devDependencies": {
     "concurrently": "^6.3.0",
