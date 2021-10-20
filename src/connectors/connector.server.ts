@@ -12,7 +12,7 @@ const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema
 	method: Method,
 	handler: ServerHandler<Schema>,
 ): MethodHandler<Schema, Method, EndpointStrings> => {
-	const endpointMap: [EndpointStrings[Method], RegExp][] = Object.keys(handler[method]).map((endpoint) => [
+	const endpointMap: [EndpointStrings[Method], RegExp][] = Object.keys(handler[method] || []).map((endpoint) => [
 		endpoint as EndpointStrings[Method],
 		endpointToRegexpPattern(endpoint),
 	])
