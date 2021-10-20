@@ -1,0 +1,30 @@
+{
+  "name": "typesafe-api-endpoints",
+  "version": "1.0.0",
+  "homepage": "https://github.com/ivanhofer/typesafe-api-endpoints",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivanhofer/typesafe-api-endpoints"
+  },
+  "author": "ivanhofer",
+  "keywords": [],
+  "license": "MIT",
+  "scripts": {
+    "build": "concurrently -n w: npm:build:*",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json"
+  },
+  "exports": {
+    "./*": {
+      "import": "./lib/esm/*.js",
+      "require": "./lib/cjs/*.js"
+    }
+  },
+  "files": [
+    "/lib"
+  ],
+  "devDependencies": {
+    "concurrently": "^6.3.0",
+    "typescript": "^4.4.4"
+  }
+}
