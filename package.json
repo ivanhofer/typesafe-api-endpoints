@@ -1,6 +1,6 @@
 {
   "name": "typesafe-api-endpoints",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "homepage": "https://github.com/ivanhofer/typesafe-api-endpoints",
   "repository": {
     "type": "git",
@@ -24,11 +24,12 @@
     "/types"
   ],
   "scripts": {
-    "build": "concurrently -n w: npm:build:*",
+    "build": "npm run clear && concurrently -n w: npm:build:*",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.esm.json",
     "build:types": "tsc -p tsconfig.types.json",
-    "publish": "npm run build && npm publish"
+    "publish": "npm run build && npm publish",
+    "clear": "rm -rf ./cjs ./esm ./types"
   },
   "devDependencies": {
     "concurrently": "^6.3.0",
