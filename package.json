@@ -16,6 +16,10 @@
     "./*": {
       "import": "./esm/*.js",
       "require": "./cjs/*.js"
+    },
+    ".": {
+      "import": "./esm/index.js",
+      "require": "./cjs/index.js"
     }
   },
   "files": [
