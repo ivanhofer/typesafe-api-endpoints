@@ -9,13 +9,13 @@
   "author": "ivanhofer",
   "keywords": [],
   "license": "MIT",
-  "module": "esm/index.js",
-  "main": "cjs/index.js",
+  "module": "esm/index.mjs",
+  "main": "cjs/index.cjs",
   "types": "types/index.d.ts",
   "exports": {
     ".": {
-      "import": "./esm/index.js",
-      "require": "./cjs/index.js"
+      "import": "./esm/index.mjs",
+      "require": "./cjs/index.cjs"
     }
   },
   "files": [
@@ -24,16 +24,21 @@
     "/types"
   ],
   "scripts": {
-    "build": "npm run clear && concurrently -n w: npm:build:*",
+    "build": "npm run clear && concurrently -n w: npm:build:* && npm run fix-file-endings",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.esm.json",
     "build:types": "tsc -p tsconfig.types.json",
+    "fix-file-endings": "tsm ./fix-file-endings.ts",
     "publish": "npm run build && npm publish",
     "clear": "rimraf ./cjs ./esm ./types"
   },
   "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/node": "^16.11.1",
     "concurrently": "^6.3.0",
+    "glob": "^7.2.0",
     "rimraf": "^3.0.2",
+    "tsm": "^2.1.2",
     "typescript": "^4.4.4"
   }
 }
