@@ -17,7 +17,8 @@
     ".": {
       "import": "./esm/index.mjs",
       "require": "./cjs/index.cjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "/cjs",
