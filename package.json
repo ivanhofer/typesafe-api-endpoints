@@ -30,7 +30,7 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "build:types": "tsc -p tsconfig.types.json",
     "fix-file-endings": "tsm ./fix-file-endings.ts",
-    "publish": "npm run build && npm publish",
+    "publish:manually": "npm run build && npm publish",
     "clear": "rimraf ./cjs ./esm ./types"
   },
   "devDependencies": {
