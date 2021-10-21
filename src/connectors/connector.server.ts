@@ -1,7 +1,7 @@
 import { EndpointNotFoundError } from '../errors'
 import type { ApiSchema, EndpointStringsFromSchema, HandlerFn, MethodsFromSchema, StringRecord, StringStringRecord } from '../types/types'
 import { getPathname } from '../utils'
-import { ServerHandler, MethodHandler, Server } from '../types/types.server'
+import { ServerHandler, MethodHandler, Server, DoBeforeFunction } from '../types/types.server'
 
 const REGEX_SLUGS = /\{[^\\}]+\}/g
 
@@ -11,6 +11,7 @@ const endpointToRegexpPattern = (endpoint: string) =>
 const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema<Schema>, EndpointStrings extends EndpointStringsFromSchema<Schema>>(
 	method: Method,
 	handler: ServerHandler<Schema>,
+	doBefore?: DoBeforeFunction
 ): MethodHandler<Schema, Method, EndpointStrings> => {
 	const endpointMap: [EndpointStrings[Method], RegExp][] = Object.keys(handler[method] || []).map((endpoint) => [
 		endpoint as EndpointStrings[Method],
@@ -39,16 +40,18 @@ const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema
 			throw new EndpointNotFoundError(endpoint as string)
 		}
 
+		doBefore && await doBefore({ method, endpoint: parsedEndpoint })
+
 		const result = await handlerFn({ slugs, query, body })
 
 		return JSON.stringify(result || null) as any
 	}
 }
 
-export const createTypesafeApiEndpointsServer = <Schema extends ApiSchema>(handler: ServerHandler<Schema>): Server<Schema> => ({
-	GET: handleMethod('GET' as any, handler),
-	POST: handleMethod('POST' as any, handler),
-	PUT: handleMethod('PUT' as any, handler),
-	PATCH: handleMethod('PATCH' as any, handler),
-	DELETE: handleMethod('DELETE' as any, handler),
+export const createTypesafeApiEndpointsServer = <Schema extends ApiSchema>(handler: ServerHandler<Schema>, doBefore?: DoBeforeFunction): Server<Schema> => ({
+	GET: handleMethod('GET' as any, handler, doBefore),
+	POST: handleMethod('POST' as any, handler, doBefore),
+	PUT: handleMethod('PUT' as any, handler, doBefore),
+	PATCH: handleMethod('PATCH' as any, handler, doBefore),
+	DELETE: handleMethod('DELETE' as any, handler, doBefore),
 }) as unknown as Server<Schema>

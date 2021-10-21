@@ -59,3 +59,8 @@ export type MethodHandler<Schema extends ApiSchema, Method extends MethodsFromSc
 	urlSearchParams: URLSearchParams,
 	body: ApiPayload<Schema, Method, Endpoint>, // TODO: define 'never' case
 ) => Promise<ApiResult<Schema, Method, Endpoint>>
+
+
+type DoBeforeParams = { method: string, endpoint: string }
+
+export type DoBeforeFunction = (params: DoBeforeParams) => void | Promise<void>

@@ -81,7 +81,10 @@ const handler: ServerHandler<Schema> = {
 	}
 }
 
-const typesafeApiEndpointsServer = createTypesafeApiEndpointsServer<Schema>(handler)
+const typesafeApiEndpointsServer = createTypesafeApiEndpointsServer<Schema>(
+	handler,
+	({ method, endpoint }) => console.log(`processing request to '${method}${endpoint}'`)
+)
 
 // you will probably write a generic wrapper around this
 
