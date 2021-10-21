@@ -9,6 +9,7 @@
   "author": "ivanhofer",
   "keywords": [],
   "license": "MIT",
+  "type": "module",
   "module": "esm/index.mjs",
   "main": "cjs/index.cjs",
   "types": "types/index.d.ts",
