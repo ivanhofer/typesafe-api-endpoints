@@ -14,6 +14,10 @@
   "main": "cjs/index.cjs",
   "types": "types/index.d.ts",
   "exports": {
+    "./adapters": {
+      "import": "./adapters/index.mjs",
+      "require": "./adapters/index.cjs"
+    },
     ".": {
       "import": "./esm/index.mjs",
       "require": "./cjs/index.cjs"
@@ -32,9 +36,10 @@
     "build:types": "tsc -p tsconfig.types.json",
     "fix-file-imports": "tsm ./fix-file-imports.ts",
     "publish:manually": "npm run build && npm publish",
-    "clear": "rimraf ./cjs ./esm ./types"
+    "clear": "rimraf ./adapters ./cjs ./esm ./types"
   },
   "devDependencies": {
+    "@sveltejs/kit": "^1.0.0-next.188",
     "@types/glob": "^7.2.0",
     "@types/node": "^16.11.1",
     "concurrently": "^6.3.0",
