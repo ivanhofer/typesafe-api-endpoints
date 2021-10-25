@@ -1,7 +1,5 @@
-import { createTypesafeApiEndpointsClient } from '../src/connectors/connector.client'
-import { createTypesafeApiEndpointsServer } from '../src/connectors/connector.server'
-import type { CreateTypesafeApiEndpointsSchema } from '../src/types/types'
-import { ServerHandler } from '../src/types/types.server'
+import { createTypesafeApiEndpointsClient, createTypesafeApiEndpointsServer } from 'typesafe-api-endpoints'
+import type { CreateTypesafeApiEndpointsSchema, ServerHandler } from 'typesafe-api-endpoints'
 
 // dummy data  --------------------------------------------------------------------------------------------------------
 
@@ -37,7 +35,7 @@ type Schema = CreateTypesafeApiEndpointsSchema<{
 	GET: {
 		'products': Product[]
 		'products?limit': Product[]
-		'product/{id}': Product
+		'product/{id}': (Product | undefined)
 		'products?search': Product[]
 	}
 	POST: {
@@ -61,7 +59,7 @@ const handler: ServerHandler<Schema> = {
 		"product": async ({ body: product }) => {
 			products = [...products, product]
 			return true
-		}
+		},
 	},
 	PUT: {
 		"product/{productId}": async ({ slugs: { productId }, body: product }) => {
@@ -99,9 +97,9 @@ const typesafeApiEndpointsClient = createTypesafeApiEndpointsClient<Schema>('api
 const fetchData = async () => {
 	const { data: products } = await typesafeApiEndpointsClient.GET('products', undefined)
 
-	const { data: product1 } = await typesafeApiEndpointsClient.GET('product/{id}', { slugs: { id: '2' }, query: undefined })
+	const { data: product1 } = await typesafeApiEndpointsClient.GET('product/{id}', { slugs: { id: '2' } })
 
 	const { error } = await typesafeApiEndpointsClient.GET('products?search', { query: { search: 'Test product' } })
 
-	const { data: updateSuccessful } = await typesafeApiEndpointsClient.PUT('product/{productId}', { slugs: { productId: '1' }, query: undefined }, { color: 'green' })
+	const { data: updateSuccessful } = await typesafeApiEndpointsClient.PUT('product/{productId}', { slugs: { productId: '1' } }, { color: 'green' })
 }

@@ -1,5 +1,4 @@
 import type {
-	AnyObject,
 	ApiParams,
 	ApiPayload,
 	ApiResult,
@@ -18,9 +17,9 @@ export type Server<Schema extends ApiSchema> = {
 
 // handler ------------------------------------------------------------------------------------------------------------
 
-type WithBody<Schema extends ApiSchema, Method extends MethodsFromSchema<Schema>, Endpoint extends EndpointStringsFromSchema<Schema>[Method], T> = Method extends 'GET'
-	? T
-	: T & { body: ApiPayload<Schema, Method, Endpoint> }
+type WithBody<Schema extends ApiSchema, Method extends MethodsFromSchema<Schema>, Endpoint extends EndpointStringsFromSchema<Schema>[Method], ParamsType> = ParamsType extends undefined
+	? { body: ApiPayload<Schema, Method, Endpoint> }
+	: ParamsType & { body: ApiPayload<Schema, Method, Endpoint> }
 
 type FunctionDefinition<
 	Schema extends ApiSchema,
@@ -28,11 +27,7 @@ type FunctionDefinition<
 	Endpoint extends EndpointStringsFromSchema<Schema>[Method],
 	ParamsType,
 	ReturnType,
-	> = ReturnType extends undefined
-	? unknown
-	: ParamsType extends AnyObject
-	? (args: WithBody<Schema, Method, Endpoint, ParamsType>) => Promise<ReturnType>
-	: () => Promise<ReturnType>
+	> = (args: WithBody<Schema, Method, Endpoint, ParamsType>) => Promise<ReturnType>
 
 type ServerHandlerInner<Schema extends ApiSchema, Methods extends MethodsFromSchema<Schema>, Endpoints extends EndpointStringsFromSchema<Schema>> = {
 	[Method in Methods]: {
