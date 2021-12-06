@@ -2,15 +2,16 @@ import { EndpointNotFoundError } from '../errors'
 import type { ApiSchema, EndpointStringsFromSchema, HandlerFn, MethodsFromSchema, StringRecord, StringStringRecord } from '../types/types'
 import { getPathname } from '../utils'
 import { ServerHandler, MethodHandler, Server, DoBeforeFunction, StatusResponse, DoAfterFunction } from '../types/types.server'
+import { Adapters } from '../adapters/adapter-types'
 
 const REGEX_SLUGS = /\{[^\\}]+\}/g
 
 const endpointToRegexpPattern = (endpoint: string) =>
 	new RegExp(`^${getPathname(endpoint).replace(REGEX_SLUGS, (s) => `(?<${s.substr(1, s.length - 2)}>[^/]+)`)}$`)
 
-const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema<Schema>, EndpointStrings extends EndpointStringsFromSchema<Schema>>(
+const handleMethod = <Schema extends ApiSchema, Adapter extends Adapters, Method extends MethodsFromSchema<Schema>, EndpointStrings extends EndpointStringsFromSchema<Schema>>(
 	method: Method,
-	handler: ServerHandler<Schema>,
+	handler: ServerHandler<Schema, Adapter>,
 	doBefore?: DoBeforeFunction,
 	doAfter?: DoAfterFunction,
 ): MethodHandler<Schema, Method, EndpointStrings> => {
@@ -57,7 +58,7 @@ const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema
 	}
 }
 
-export const createTypesafeApiEndpointsServer = <Schema extends ApiSchema>(handler: ServerHandler<Schema>, doBefore?: DoBeforeFunction, doAfter?: DoAfterFunction): Server<Schema> => ({
+export const createTypesafeApiEndpointsServer = <Schema extends ApiSchema, Adapter extends Adapters>(handler: ServerHandler<Schema, Adapter>, doBefore?: DoBeforeFunction, doAfter?: DoAfterFunction): Server<Schema> => ({
 	GET: handleMethod('GET' as any, handler, doBefore, doAfter),
 	POST: handleMethod('POST' as any, handler, doBefore, doAfter),
 	PUT: handleMethod('PUT' as any, handler, doBefore, doAfter),

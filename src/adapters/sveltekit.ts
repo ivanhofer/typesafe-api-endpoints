@@ -10,9 +10,9 @@ export const sveltekit = <
 	Schema extends ApiSchema,
 	Methods extends MethodsFromSchema<Schema> = MethodsFromSchema<Schema>,
 	Endpoints extends EndpointStringsFromSchema<Schema> = EndpointStringsFromSchema<Schema>
-	>(handler: ServerHandler<Schema>, doBefore?: DoBeforeFunction, doAfter?: DoAfterFunction) => {
+	>(handler: ServerHandler<Schema, 'SvelteKit', any>, doBefore?: DoBeforeFunction, doAfter?: DoAfterFunction) => {
 
-	const typesafeApiEndpointsServer = createTypesafeApiEndpointsServer<Schema>(handler, doBefore, doAfter)
+	const typesafeApiEndpointsServer = createTypesafeApiEndpointsServer<Schema, 'SvelteKit'>(handler, doBefore, doAfter)
 
 	const createApiRouteHandler = <Method extends Methods>(method: Method): RequestHandler =>
 		async ({ params: { route }, query, body, locals }) => {
