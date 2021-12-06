@@ -79,3 +79,7 @@ export type MethodHandler<Schema extends ApiSchema, Method extends MethodsFromSc
 type DoBeforeParams = { method: string, endpoint: string }
 
 export type DoBeforeFunction = (params: DoBeforeParams) => void | Promise<void>
+
+type DoAfterParams = { method: string, endpoint: string, duration: number }
+
+export type DoAfterFunction = (params: DoAfterParams) => void | Promise<void>

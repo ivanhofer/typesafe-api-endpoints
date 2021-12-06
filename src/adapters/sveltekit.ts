@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit'
 import { createTypesafeApiEndpointsServer } from '../connectors/connector.server'
 import { EndpointNotFoundError } from '../errors'
 import type { ApiSchema, EndpointStringsFromSchema, MethodsFromSchema } from '../types/types'
-import { DoBeforeFunction, ServerHandler, StatusResponse } from '../types/types.server'
+import { DoAfterFunction, DoBeforeFunction, ServerHandler, StatusResponse } from '../types/types.server'
 
 type HandlerMethod = (...args: unknown[]) => Promise<any>
 
@@ -10,9 +10,9 @@ export const sveltekit = <
 	Schema extends ApiSchema,
 	Methods extends MethodsFromSchema<Schema> = MethodsFromSchema<Schema>,
 	Endpoints extends EndpointStringsFromSchema<Schema> = EndpointStringsFromSchema<Schema>
->(handler: ServerHandler<Schema>, doBefore?: DoBeforeFunction) => {
+	>(handler: ServerHandler<Schema>, doBefore?: DoBeforeFunction, doAfter?: DoAfterFunction) => {
 
-	const typesafeApiEndpointsServer = createTypesafeApiEndpointsServer<Schema>(handler, doBefore)
+	const typesafeApiEndpointsServer = createTypesafeApiEndpointsServer<Schema>(handler, doBefore, doAfter)
 
 	const createApiRouteHandler = <Method extends Methods>(method: Method): RequestHandler =>
 		async ({ params: { route }, query, body, locals }) => {

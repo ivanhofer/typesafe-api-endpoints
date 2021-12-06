@@ -1,7 +1,7 @@
 import { EndpointNotFoundError } from '../errors'
 import type { ApiSchema, EndpointStringsFromSchema, HandlerFn, MethodsFromSchema, StringRecord, StringStringRecord } from '../types/types'
 import { getPathname } from '../utils'
-import { ServerHandler, MethodHandler, Server, DoBeforeFunction, StatusResponse } from '../types/types.server'
+import { ServerHandler, MethodHandler, Server, DoBeforeFunction, StatusResponse, DoAfterFunction } from '../types/types.server'
 
 const REGEX_SLUGS = /\{[^\\}]+\}/g
 
@@ -12,6 +12,7 @@ const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema
 	method: Method,
 	handler: ServerHandler<Schema>,
 	doBefore?: DoBeforeFunction,
+	doAfter?: DoAfterFunction,
 ): MethodHandler<Schema, Method, EndpointStrings> => {
 	const endpointMap: [EndpointStrings[Method], RegExp][] = Object.keys(handler[method] || []).map((endpoint) => [
 		endpoint as EndpointStrings[Method],
@@ -42,7 +43,11 @@ const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema
 
 		doBefore && await doBefore({ method, endpoint: parsedEndpoint })
 
+		const start = Date.now()
 		const result = await handlerFn({ slugs, query, body, ...additionalPayload })
+		const duration = Date.now() - start
+
+		doAfter && await doAfter({ method, endpoint: parsedEndpoint, duration })
 
 		if (result instanceof StatusResponse) {
 			throw result
@@ -52,10 +57,10 @@ const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema
 	}
 }
 
-export const createTypesafeApiEndpointsServer = <Schema extends ApiSchema>(handler: ServerHandler<Schema>, doBefore?: DoBeforeFunction): Server<Schema> => ({
-	GET: handleMethod('GET' as any, handler, doBefore),
-	POST: handleMethod('POST' as any, handler, doBefore),
-	PUT: handleMethod('PUT' as any, handler, doBefore),
-	PATCH: handleMethod('PATCH' as any, handler, doBefore),
-	DELETE: handleMethod('DELETE' as any, handler, doBefore),
+export const createTypesafeApiEndpointsServer = <Schema extends ApiSchema>(handler: ServerHandler<Schema>, doBefore?: DoBeforeFunction, doAfter?: DoAfterFunction): Server<Schema> => ({
+	GET: handleMethod('GET' as any, handler, doBefore, doAfter),
+	POST: handleMethod('POST' as any, handler, doBefore, doAfter),
+	PUT: handleMethod('PUT' as any, handler, doBefore, doAfter),
+	PATCH: handleMethod('PATCH' as any, handler, doBefore, doAfter),
+	DELETE: handleMethod('DELETE' as any, handler, doBefore, doAfter),
 }) as unknown as Server<Schema>
