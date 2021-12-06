@@ -43,10 +43,11 @@ type FunctionDefinition<
 	Endpoint extends EndpointStringsFromSchema<Schema>[Method],
 	ParamsType,
 	ReturnType,
-	Adapter extends Adapters
-	> = (args: WithBody<Schema, Method, Endpoint, ParamsType> & AdapterPayload[Adapter]) => Promise<ReturnType | StatusResponse>
+	Adapter extends Adapters,
+	Payload
+	> = (args: WithBody<Schema, Method, Endpoint, ParamsType> & AdapterPayload<Payload>[Adapter]) => Promise<ReturnType | StatusResponse>
 
-type ServerHandlerInner<Schema extends ApiSchema, Methods extends MethodsFromSchema<Schema>, Endpoints extends EndpointStringsFromSchema<Schema>, Adapter extends Adapters> = {
+type ServerHandlerInner<Schema extends ApiSchema, Methods extends MethodsFromSchema<Schema>, Endpoints extends EndpointStringsFromSchema<Schema>, Adapter extends Adapters, Payload> = {
 	[Method in Methods]: {
 		[Endpoint in Endpoints[Method]]: Endpoint extends string
 		? FunctionDefinition<
@@ -55,24 +56,26 @@ type ServerHandlerInner<Schema extends ApiSchema, Methods extends MethodsFromSch
 			Endpoint,
 			ApiParams<ParseSlugs<Endpoint>, ParseQuery<Endpoint>>,
 			ApiResult<Schema, Method, Endpoint>,
-			Adapter
+			Adapter,
+			Payload
 		>
 		: never
 	}
 }
 
-export type ServerHandler<Schema extends ApiSchema, Adapter extends Adapters = 'none'> = ServerHandlerInner<
+export type ServerHandler<Schema extends ApiSchema, Adapter extends Adapters = 'none', Payload = unknown> = ServerHandlerInner<
 	Schema,
 	MethodsFromSchema<Schema>,
 	EndpointStringsFromSchema<Schema>,
-	Adapter
+	Adapter,
+	Payload
 >
 
-export type MethodHandler<Schema extends ApiSchema, Method extends MethodsFromSchema<Schema>, EndpointStrings extends EndpointStringsFromSchema<Schema>, Adapter extends Adapters = 'none'> = <Endpoint extends EndpointStrings[Method]>(
+export type MethodHandler<Schema extends ApiSchema, Method extends MethodsFromSchema<Schema>, EndpointStrings extends EndpointStringsFromSchema<Schema>, Adapter extends Adapters = 'none', Payload = unknown> = <Endpoint extends EndpointStrings[Method]>(
 	endpoint: Endpoint,
 	urlSearchParams: URLSearchParams,
 	body: ApiPayload<Schema, Method, Endpoint>, // TODO: define 'never' case
-	payload?: AdapterPayload[Adapter]
+	payload?: AdapterPayload<Payload>[Adapter]
 ) => Promise<ApiResult<Schema, Method, Endpoint>>
 
 

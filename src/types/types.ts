@@ -74,13 +74,13 @@ export type ApiParams<Slugs extends string[] | undefined, Query extends string[]
 
 // handler ------------------------------------------------------------------------------------------------------------
 
-export type HandlerFn<Adapter extends Adapters = 'none'> = (args: Params<Adapter>) => unknown
+export type HandlerFn<Adapter extends Adapters = 'none', Payload = unknown> = (args: Params<Adapter, Payload>) => unknown
 
-export type Params<Adapter extends Adapters = 'none'> = {
+export type Params<Adapter extends Adapters = 'none', Payload = unknown> = {
 	slugs: StringStringRecord | undefined
 	query: StringStringRecord | undefined
 	body: unknown | undefined
-} & AdapterPayload[Adapter]
+} & AdapterPayload<Payload>[Adapter]
 
 // slugs-parsing ------------------------------------------------------------------------------------------------------
 
