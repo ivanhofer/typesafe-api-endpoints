@@ -11,14 +11,14 @@ const endpointToRegexpPattern = (endpoint: string) =>
 const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema<Schema>, EndpointStrings extends EndpointStringsFromSchema<Schema>>(
 	method: Method,
 	handler: ServerHandler<Schema>,
-	doBefore?: DoBeforeFunction
+	doBefore?: DoBeforeFunction,
 ): MethodHandler<Schema, Method, EndpointStrings> => {
 	const endpointMap: [EndpointStrings[Method], RegExp][] = Object.keys(handler[method] || []).map((endpoint) => [
 		endpoint as EndpointStrings[Method],
 		endpointToRegexpPattern(endpoint),
 	])
 
-	return async (endpoint, urlSearchParams, body) => {
+	return async (endpoint, urlSearchParams, body, additionalPayload) => {
 		const query = {} as StringStringRecord
 		urlSearchParams.forEach((value, name) => (query[name] = value))
 
@@ -42,7 +42,7 @@ const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema
 
 		doBefore && await doBefore({ method, endpoint: parsedEndpoint })
 
-		const result = await handlerFn({ slugs, query, body })
+		const result = await handlerFn({ slugs, query, body, ...additionalPayload })
 
 		return JSON.stringify(result || null) as any
 	}

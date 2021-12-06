@@ -1,5 +1,7 @@
 // globals ------------------------------------------------------------------------------------------------------------
 
+import { AdapterPayload, Adapters } from '../adapters/adapter-types'
+
 type AllowedMethods = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 type FilterForAllowedMethods<Method> = Method extends AllowedMethods ? Method : never
@@ -72,13 +74,13 @@ export type ApiParams<Slugs extends string[] | undefined, Query extends string[]
 
 // handler ------------------------------------------------------------------------------------------------------------
 
-export type HandlerFn = (args: Params) => unknown
+export type HandlerFn<Adapter extends Adapters = 'none'> = (args: Params<Adapter>) => unknown
 
-export type Params = {
+export type Params<Adapter extends Adapters = 'none'> = {
 	slugs: StringStringRecord | undefined
 	query: StringStringRecord | undefined
 	body: unknown | undefined
-}
+} & AdapterPayload[Adapter]
 
 // slugs-parsing ------------------------------------------------------------------------------------------------------
 

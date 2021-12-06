@@ -15,13 +15,14 @@ export const sveltekit = <
 	const typesafeApiEndpointsServer = createTypesafeApiEndpointsServer<Schema>(handler, doBefore)
 
 	const createApiRouteHandler = <Method extends Methods>(method: Method): RequestHandler =>
-		async ({ params: { route }, query, body }) => {
+		async ({ params: { route }, query, body, locals }) => {
 			let error: unknown = undefined
 
 			const data = await (typesafeApiEndpointsServer[method] as HandlerMethod)(
 				route as Endpoints[Method],
 				query,
 				body,
+				{ locals },
 			).catch((e) => {
 				error = e
 				return undefined
