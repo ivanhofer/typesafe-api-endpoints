@@ -26,7 +26,7 @@ let products = [product1, product2, product3]
 
 // server -------------------------------------------------------------------------------------------------------------
 
-export const handler: ServerHandler<Schema> = {
+export const handler: ServerHandler<Schema, 'SvelteKit'> = {
 	GET: {
 		"products": async () => products,
 		"products?limit": async ({ query: { limit = Infinity } }) => products.slice(0, +limit),
@@ -52,6 +52,7 @@ export const handler: ServerHandler<Schema> = {
 				}
 				return newValue
 			})
+
 			return updated
 		}
 	}

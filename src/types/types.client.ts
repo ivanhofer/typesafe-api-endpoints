@@ -13,12 +13,16 @@ export type GetHeaders<Schema extends ApiSchema> = (method: MethodsFromSchema<Sc
 
 // api-response -------------------------------------------------------------------------------------------------------
 
-type ErrorApiResponse = {
+type BaseApiResponse = {
+	status: number // TODO: define all status-codes
+}
+
+type ErrorApiResponse = BaseApiResponse & {
 	error: ApiError
 	data: undefined
 }
 
-type SuccessApiResponse<ReturnType> = {
+type SuccessApiResponse<ReturnType> = BaseApiResponse & {
 	data: ReturnType
 	error: undefined
 }

@@ -1,7 +1,7 @@
 import { EndpointNotFoundError } from '../errors'
 import type { ApiSchema, EndpointStringsFromSchema, HandlerFn, MethodsFromSchema, StringRecord, StringStringRecord } from '../types/types'
 import { getPathname } from '../utils'
-import { ServerHandler, MethodHandler, Server, DoBeforeFunction } from '../types/types.server'
+import { ServerHandler, MethodHandler, Server, DoBeforeFunction, StatusResponse } from '../types/types.server'
 
 const REGEX_SLUGS = /\{[^\\}]+\}/g
 
@@ -43,6 +43,10 @@ const handleMethod = <Schema extends ApiSchema, Method extends MethodsFromSchema
 		doBefore && await doBefore({ method, endpoint: parsedEndpoint })
 
 		const result = await handlerFn({ slugs, query, body, ...additionalPayload })
+
+		if (result instanceof StatusResponse) {
+			throw result
+		}
 
 		return JSON.stringify(result || null) as any
 	}

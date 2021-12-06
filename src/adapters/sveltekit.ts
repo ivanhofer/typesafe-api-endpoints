@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit'
 import { createTypesafeApiEndpointsServer } from '../connectors/connector.server'
 import { EndpointNotFoundError } from '../errors'
 import type { ApiSchema, EndpointStringsFromSchema, MethodsFromSchema } from '../types/types'
-import { DoBeforeFunction, ServerHandler } from '../types/types.server'
+import { DoBeforeFunction, ServerHandler, StatusResponse } from '../types/types.server'
 
 type HandlerMethod = (...args: unknown[]) => Promise<any>
 
@@ -30,6 +30,10 @@ export const sveltekit = <
 
 			if (data) {
 				return { body: data }
+			}
+
+			if (error instanceof StatusResponse) {
+				return { status: error.status, body: error.data }
 			}
 
 			if (error instanceof EndpointNotFoundError) {

@@ -16,6 +16,20 @@ export type Server<Schema extends ApiSchema> = {
 	[Method in MethodsFromSchema<Schema>]: MethodHandler<Schema, Method, EndpointStringsFromSchema<Schema>>
 }
 
+export class StatusResponse<T = never> {
+	#status: number
+	#data: T | undefined
+
+	constructor(status: number, data?: T) {
+		this.#status = status
+		this.#data = data
+	}
+
+	get status(): number { return this.#status }
+
+	get data(): T | undefined { return this.#data }
+}
+
 // handler ------------------------------------------------------------------------------------------------------------
 
 type WithBody<Schema extends ApiSchema, Method extends MethodsFromSchema<Schema>, Endpoint extends EndpointStringsFromSchema<Schema>[Method], ParamsType> =
@@ -30,7 +44,7 @@ type FunctionDefinition<
 	ParamsType,
 	ReturnType,
 	Adapter extends Adapters
-	> = (args: WithBody<Schema, Method, Endpoint, ParamsType> & AdapterPayload[Adapter]) => Promise<ReturnType>
+	> = (args: WithBody<Schema, Method, Endpoint, ParamsType> & AdapterPayload[Adapter]) => Promise<ReturnType | StatusResponse>
 
 type ServerHandlerInner<Schema extends ApiSchema, Methods extends MethodsFromSchema<Schema>, Endpoints extends EndpointStringsFromSchema<Schema>, Adapter extends Adapters> = {
 	[Method in Methods]: {
