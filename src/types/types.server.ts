@@ -27,7 +27,7 @@ export class StatusResponse<T = never> {
 
 	get status(): number { return this.#status }
 
-	get data(): T | undefined { return this.#data }
+	get data(): string | undefined { return this.#data ? JSON.stringify(this.#data) : undefined }
 }
 
 // handler ------------------------------------------------------------------------------------------------------------
