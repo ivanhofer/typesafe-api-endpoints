@@ -46,7 +46,10 @@ const makeFetchCall = async <Schema extends ApiSchema, Method extends MethodsFro
 	const url = `${apiEndpoint}/${replaceSlugs(getPathFromEndpoint(endpoint), slugs)}${paramsToString(query)}`
 	const response = await fetchFn(url, {
 		method,
-		headers,
+		headers: {
+			'content-type': 'application/json',
+			...headers
+		},
 		...(body ? { body: JSON.stringify(body) } : {}),
 	}).catch((error) => {
 		throw new ApiError(400, error)
