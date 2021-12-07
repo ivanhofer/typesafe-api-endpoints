@@ -74,7 +74,7 @@ export type ApiParams<Slugs extends string[] | undefined, Query extends string[]
 
 // handler ------------------------------------------------------------------------------------------------------------
 
-export type HandlerFn<Adapter extends Adapters = 'none', Payload = unknown> = (args: Params<Adapter, Payload>) => unknown
+export type HandlerFn<Adapter extends Adapters = 'none', Payload = unknown> = (args: Params<Adapter, Payload>) => Promise<unknown>
 
 export type Params<Adapter extends Adapters = 'none', Payload = unknown> = {
 	slugs: StringStringRecord | undefined

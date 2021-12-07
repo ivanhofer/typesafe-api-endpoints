@@ -45,7 +45,7 @@ const handleMethod = <Schema extends ApiSchema, Adapter extends Adapters, Method
 		doBefore && await doBefore({ method, endpoint: parsedEndpoint })
 
 		const start = Date.now()
-		const result = await handlerFn({ slugs, query, body, ...additionalPayload })
+		const result = await handlerFn({ slugs, query, body, ...additionalPayload }).catch(console.error)
 		const duration = Date.now() - start
 
 		doAfter && await doAfter({ method, endpoint: parsedEndpoint, duration })
