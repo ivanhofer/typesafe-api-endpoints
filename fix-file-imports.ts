@@ -38,7 +38,7 @@ modules.forEach(({ folder, fileEnding, regex }) => {
 })
 
 const getTemplate = {
-	esm: (subFolder: string) => `export * from "../esm/${subFolder}"
+	esm: (subFolder: string) => `export * from "../esm/${subFolder}/index.mjs"
 `
 	,
 	cjs: (subFolder: string) => `"use strict";
