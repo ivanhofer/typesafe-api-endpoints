@@ -56,7 +56,9 @@ const makeFetchCall = async <Schema extends ApiSchema, Method extends MethodsFro
 	})
 
 	if (!response.ok) {
-		throw new ApiError(response.status, response.statusText)
+
+		const message = await response.text() || response.statusText
+		throw new ApiError(response.status, message)
 	}
 
 	return await response.json()

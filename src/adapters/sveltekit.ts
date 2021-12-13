@@ -1,4 +1,5 @@
 import type { RequestHandler } from '@sveltejs/kit'
+import { ApiError } from '../index'
 import { createTypesafeApiEndpointsServer } from '../connectors/connector.server'
 import { EndpointNotFoundError } from '../errors'
 import type { ApiSchema, EndpointStringsFromSchema, MethodsFromSchema } from '../types/types'
@@ -40,7 +41,11 @@ export const sveltekit = <
 				return { status: 404 }
 			}
 
-			return { status: 500 }
+			if (error instanceof ApiError) {
+				return { status: error.status, body: error.statusText }
+			}
+
+			return { status: 500, body: (error as Error)?.message || JSON.stringify(error) }
 		}
 
 	return {
